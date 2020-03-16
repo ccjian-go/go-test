@@ -1,3 +1,5 @@
+# github.com/gin-gonic/gin v1.5.0
+## explicit
 # github.com/go-sql-driver/mysql v1.4.1
 github.com/go-sql-driver/mysql
 # github.com/jinzhu/gorm v1.9.12
@@ -8,7 +10,3 @@ github.com/jinzhu/gorm/dialects/mysql
 github.com/jinzhu/inflection
 # google.golang.org/appengine v1.4.0
 google.golang.org/appengine/cloudsql
-# tools v0.0.0 => ./tools
-## explicit
-tools
-# tools => ./tools
