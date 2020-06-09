@@ -1,8 +1,6 @@
 package main
 
 import (
-	//导入MYSQL数据库驱动，这里使用的是GORM库封装的MYSQL驱动导入包，实际上大家看源码就知道，这里等价于导入github.com/go-sql-driver/mysql
-	//这里导入包使用了 _ 前缀代表仅仅是导入这个包，但是我们在代码里面不会直接使用。
 	"fmt"
 	"github.com/gobuffalo/packr"
 	"github.com/jinzhu/gorm"
@@ -30,11 +28,22 @@ func (u User) TableName() string {
 	return "users"
 }
 
-func main() {
+//定义toml对应的Struct并初始化
+type Config struct{
+	Age int64
+	Name string
+	Perfection []int
+	Color []string
+}
+
+func main(){
+
+}
+
+func main2() {
 	box := packr.NewBox("./")
 	data2 := box.String("test.txt")
 	fmt.Println("Contents of file:", data2)
-
 
 	tools.Test()
 	test.Print()
