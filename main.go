@@ -1,105 +1,154 @@
 package main
 
-import (
-	"fmt"
-	"github.com/gobuffalo/packr"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"go-test/test"
-	"go-test/tools"
-	"time"
-)
+import "fmt"
 
-//定义User模型，绑定users表，ORM库操作数据库，需要定义一个struct类型和MYSQL表进行绑定或者叫映射，struct字段和MYSQL表字段一一对应
-//在这里User类型可以代表mysql users表
-type User struct {
-	//通过在字段后面的标签说明，定义golang字段和表字段的关系
-	//例如 `gorm:"column:username"` 标签说明含义是: Mysql表的列名（字段名)为username
-	//这里golang定义的Username变量和MYSQL表字段username一样，他们的名字可以不一样。
-	Username string `gorm:"column:username"`
-	Password string `gorm:"column:password"`
-	//创建时间，时间戳
-	CreateTime int64 `gorm:"column:createtime"`
+// 时间复杂度、空间复杂度、算法稳定性
+func main() {
+	arr := []int {1,9,2,8,3,7,4,6,5}
+	fmt.Printf("%#v",arr)
+	InsertSort(arr)
 }
 
-//设置表名，可以通过给struct类型定义 TableName函数，返回当前struct绑定的mysql表名是什么
-func (u User) TableName() string {
-	//绑定MYSQL表名为users
-	return "users"
-}
 
-//定义toml对应的Struct并初始化
-type Config struct{
-	Age int64
-	Name string
-	Perfection []int
-	Color []string
-}
-
-func main(){
-
-}
-
-func main2() {
-	box := packr.NewBox("./")
-	data2 := box.String("test.txt")
-	fmt.Println("Contents of file:", data2)
-
-	tools.Test()
-	test.Print()
-	//配置MySQL连接参数
-	username := "root"       //账号
-	password := "123456"     //密码
-	host := "mysql" //数据库地址，可以是Ip或者域名
-	port := 3306             //数据库端口
-	Dbname := "test"         //数据库名
-
-	//通过前面的数据库参数，拼接MYSQL DSN， 其实就是数据库连接串（数据源名称）
-	//MYSQL dsn格式： {username}:{password}@tcp({host}:{port})/{Dbname}?charset=utf8&parseTime=True&loc=Local
-	//类似{username}使用花括号包着的名字都是需要替换的参数
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local", username, password, host, port, Dbname)
-	//连接MYSQL
-	db, err := gorm.Open("mysql", dsn)
-
-	if err != nil {
-		panic("连接数据库失败, error=" + err.Error())
+// 1 冒泡排序
+// 比较相邻的元素。如果第一个比第二个大，就交换他们两个。 [1]
+// 对每一对相邻元素做同样的工作，从开始第一对到结尾的最后一对。在这一点，最后的元素应该会是最大的数。 [1]
+// 针对所有的元素重复以上的步骤，除了最后一个。 [1]
+// 持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
+func BubbleSort(arr []int){
+	for i:=0; i<len(arr); i++{
+		exchange := false
+		for j:=0; j<len(arr)-i-1; j++{
+			if arr[j] > arr[j+1]  {
+				arr[j], arr[j+1] = arr[j+1],arr[j]
+				exchange =true
+			}
+		}
+		if exchange {
+			return
+		}
 	}
-
-	// 打印sql
-	db.LogMode(true)
-
-	//定义一个用户，并初始化数据
-	u := User{
-		Username:   "tizi365",
-		Password:   "123456",
-		CreateTime: time.Now().Unix(),
-	}
-
-	//插入一条用户数据
-	//下面代码会自动生成SQL语句：INSERT INTO `users` (`username`,`password`,`createtime`) VALUES ('tizi365','123456','1540824823')
-	if err := db.Create(u).Error; err != nil {
-		fmt.Println("插入失败", err)
-		return
-	}
-
-	//查询并返回第一条数据
-	//定义需要保存数据的struct变量
-	u = User{}
-	//自动生成sql： SELECT * FROM `users`  WHERE (username = 'tizi365') LIMIT 1
-	isNotFound := db.Where("username = ?", "tizi365").First(&u).RecordNotFound()
-	if isNotFound {
-		fmt.Println("找不到记录")
-		return
-	}
-	//打印查询到的数据
-	fmt.Println(u)
-	fmt.Println(u.Username, u.Password)
-
-	//更新
-	//自动生成Sql: UPDATE `users` SET `password` = '654321'  WHERE (username = 'tizi365')
-	db.Model(User{}).Where("username = ?", "tizi365").Update("password", "654321")
-
-	//删除
-	//自动生成Sql： DELETE FROM `users`  WHERE (username = 'tizi365')
-	//db.Where("username = ?", "tizi365").Delete(User{})
+	fmt.Printf("%#v",arr)
 }
+
+// 2 选择排序
+// 工作原理是每一次从待排序的数据元素中选出最小（或最大）的一个元素，存放在序列的起始位置，然后，再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。
+// 以此类推，直到全部待排序的数据元素排完。
+func SelectSort(li [] int){
+	for i := 0; i<len(li)-1; i++ {
+		pos := i
+		for j := i+1; j <len(li); j++ {
+			if li[pos] < li[j] {
+				pos = j
+			}
+		}
+		li[i], li[pos] = li[pos], li[i]
+	}
+	fmt.Printf("%#v",li)
+}
+
+// 3 插入排序
+// 它的工作原理是通过构建有序序列,对于未排序数据,在已排序序列中从后向前扫描,找到相应位置并插入
+// 实现自述：获得将插入的数据，一旦在有序序列中找到相应位置，将后面的数全部右移一位，然后在空出来的位置上放入该插入的数据
+func InsertSort(li []int){
+	num := 0
+	for i:=1; i<len(li); i++ {
+		tmp := li[i]
+		j := i-1
+		for j>=0 && tmp < li[j]  {
+			num +=1
+			li[j+1] = li[j]
+			j--
+		}
+		li[j+1] = tmp
+	}
+	fmt.Println(num)
+	fmt.Printf("%#v", li)
+}
+
+
+// 4 希尔排序
+// 直接插入排序的改进版，直接插入排序每次只能移动一位，而希尔排序根据特定的步长，移动距离大大增加。
+// 希尔排序就是减少增量的排序方法，给出初始设定一个增量，然后根据这个增量将整个序列进行划分，划分成若干个子序列，然后对每个子序列进行直接插入排序。
+// 然后再将增量减少，然后再将整个序列划分成若干个子序列，然后在对每个子序列进行直接插入排序，依次类推，直到增量为1时，
+// 即对整个序列进行直接插入排序，因为现在的序列已经基本有序，则直接插入排序的效率较高，这样完成后，我们的整个序列就完全有序。
+// 实现自述：直接插入排序算法的改进版，通过分区， 减少重复参与排序的数量
+func ShellSort(li []int){
+	num := 0
+	for gap:=len(li)/2; gap>0; gap /=2 {
+		for i:=gap; i<len(li); i+=gap {
+			tmp := li[i]
+			j := i-gap
+			for j>=0 && tmp<li[j] {
+				num +=1
+				li[j+gap] = li[j]
+				j -= gap
+			}
+			li[j+gap] = tmp
+		}
+	}
+	fmt.Println(num)
+	fmt.Printf("%#v", li)
+}
+
+
+// 5 快速排序
+// 快排是利用分治的思想，如果要排序的数组中下标是从p到r之间的一组数据，我们选择p到r之间的任意一个数据作为分区点（pivot（分区点)),
+// 我们遍历p到r之间的数据，将小于pivot放到左边，将大于pivot放到右边，将pivot放到中间，这样经过这一步骤之后，数组p到r之间的数据分成了三部分。
+// 前面p到q-1都是小于pivot的，中间pivot， 后面的q+1到r之间都是大于pivot的。
+
+// 6 堆排序
+
+
+// 7 归并排序
+
+
+// -------------------------------------------------------
+
+
+// 8 计数排序
+
+
+// 9 桶排序
+
+
+// 10 基数排序
+
+
+// 用堆排解决top_k问题
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
