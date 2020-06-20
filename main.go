@@ -1,12 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 // 时间复杂度、空间复杂度、算法稳定性
 func main() {
-	arr := []int {1,9,2,8,3,7,4,6,5}
+	arr := []int {5,9,2,8,3,7,4,6,1}
 	fmt.Printf("%#v",arr)
-	InsertSort(arr)
+	QuickSort(arr,0,len(arr)-1)
+	fmt.Printf("%#v",arr)
 }
 
 
@@ -28,7 +33,6 @@ func BubbleSort(arr []int){
 			return
 		}
 	}
-	fmt.Printf("%#v",arr)
 }
 
 // 2 选择排序
@@ -44,7 +48,6 @@ func SelectSort(li [] int){
 		}
 		li[i], li[pos] = li[pos], li[i]
 	}
-	fmt.Printf("%#v",li)
 }
 
 // 3 插入排序
@@ -63,7 +66,6 @@ func InsertSort(li []int){
 		li[j+1] = tmp
 	}
 	fmt.Println(num)
-	fmt.Printf("%#v", li)
 }
 
 
@@ -88,7 +90,6 @@ func ShellSort(li []int){
 		}
 	}
 	fmt.Println(num)
-	fmt.Printf("%#v", li)
 }
 
 
@@ -96,6 +97,44 @@ func ShellSort(li []int){
 // 快排是利用分治的思想，如果要排序的数组中下标是从p到r之间的一组数据，我们选择p到r之间的任意一个数据作为分区点（pivot（分区点)),
 // 我们遍历p到r之间的数据，将小于pivot放到左边，将大于pivot放到右边，将pivot放到中间，这样经过这一步骤之后，数组p到r之间的数据分成了三部分。
 // 前面p到q-1都是小于pivot的，中间pivot， 后面的q+1到r之间都是大于pivot的。
+
+// 双边循环法-实现自述：使用指针找到应该交换位置的值，交换指针对应的值，完成排序。
+// 选择一个分区点，（左边的指针）放小的，（右边的指针）放大的，
+// 那么当（左边的指针）对应的值小于或等于分区点的值时，指针右移，寻找到不适合该条件的情况时，停止移动，找到的值就是大于分区点的值。等待被交换到右边。
+// 同样，指针从右边开始，向左移动，找到小于分区点的值，等到被交换到左边。
+
+func QuickSort(arr []int, startIndex, endIndex int) {
+	if startIndex>=endIndex{
+		return
+	}
+	pivotIndex := partition(arr,startIndex,endIndex)
+	QuickSort(arr,startIndex,pivotIndex-1)
+	QuickSort(arr,pivotIndex+1,endIndex)
+}
+
+//双边循环，从右侧开始
+func partition(arr []int, startIndex, endIndex int) int {
+	rand.Seed(time.Now().UnixNano())
+
+	var (
+		pivot = arr[startIndex]
+		left = startIndex
+		right = endIndex
+	)
+	for left != right {
+		for left<right && arr[right]>pivot{
+			right--
+		}
+		for left<right && arr[left]<=pivot{
+			left++
+		}
+		if left<right{
+			arr[left],arr[right] = arr[right],arr[left]
+		}
+	}
+	arr[left],arr[startIndex] = arr[startIndex],arr[left]
+	return left
+}
 
 // 6 堆排序
 
