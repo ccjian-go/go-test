@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 )
 
 // 时间复杂度、空间复杂度、算法稳定性
 func main() {
-	arr := []int {5,9,2,8,3,7,4,6,1}
+	arr := []int {5,2,8,9,3,7,1,4,6}
 	fmt.Printf("%#v",arr)
-	QuickSort(arr,0,len(arr)-1)
+	//QuickSort(arr,0,len(arr)-1)
+	//HeapSort(arr)
+	MergerSort(arr, 0, len(arr))
+	//MergeSort(arr, 0, len(arr))
 	fmt.Printf("%#v",arr)
 }
 
@@ -114,8 +115,6 @@ func QuickSort(arr []int, startIndex, endIndex int) {
 
 //双边循环，从右侧开始
 func partition(arr []int, startIndex, endIndex int) int {
-	rand.Seed(time.Now().UnixNano())
-
 	var (
 		pivot = arr[startIndex]
 		left = startIndex
@@ -137,9 +136,133 @@ func partition(arr []int, startIndex, endIndex int) int {
 }
 
 // 6 堆排序
+//Base-最大堆、最小堆、堆顶、堆的自我调整（插入节点、删除节点、构建二叉堆）
+
+// 上浮调整
+// 下沉调整
+// 构建堆
+
+//堆排序
+func HeapSort(values []int) {
+	buildHeap(values)  // 第一次是把最大值筛选到了第一位
+	fmt.Printf("%#v",values)
+	for i := len(values); i > 1; i-- {
+		values[0], values[i-1] = values[i-1], values[0] // 筛出最大值到顶点结点0，将最大值换到 i-1，后续保持其不变
+		adjustHeap(values[:i-1], 0) // i-1及其前面不参与筛选最大值，保持不变
+		fmt.Println("the heap is ", values)
+	}
+}
+
+func buildHeap(values []int) {
+	for i := len(values); i >= 0; i-- { //////一定得从后往前调整，
+		adjustHeap(values, i)
+	}
+}
+
+func adjustHeap(values []int, pos int) { ///////// 调整pos位置的结点
+	node := pos
+	length := len(values)
+	for node < length {
+		var child int = 0
+		if 2*node+2 < length { ///////// 比较左右子节点找出大子节点
+			if values[2*node+1] > values[2*node+2] {
+				child = 2*node + 1
+			} else {
+				child = 2*node + 2
+			} //////// 选出大子节点
+		} else if 2*node+1 < length {
+			child = 2*node + 1
+		}
+		if child > 0 && values[child] > values[node] { ///////// 比较大子节点和本当前节点，当前子节点小则交换位置，node获取三者中最大值
+			values[node], values[child] = values[child], values[node] // values[node] 将会是所能接触到的最大值
+			node = child // 第二大的值对应的结点比较周围的值进入下个循环
+		} else {
+			break
+		}
+	}
+}
+
 
 
 // 7 归并排序
+// 归并排序法（Merge Sort，以下简称MS）是分治法思想运用的一个典范。其主要算法操作可以分为以下步骤：
+//Step 1：将n个元素分成两个含n/2元素的子序列
+//Step 2：用MS将两个子序列递归排序（最后可以将整个原序列分解成n个子序列）
+//Step 3：合并两个已排序好的序列
+//首先将数组一份为二，分别为左数组和右数组
+//若左数组的长度大于1，那么对左数组实施归并排序
+//若右数组的长度大于1， 那么对右数组实施归并排序
+//将左右数组进行合并
+// 因为是递归，所以要一开始假设是两个数的情况
+func MergeSort(arr[]int, a, b int){
+	if b-a <= 1{
+		return
+	}
+	c := (a+b)/2
+	MergeSort(arr,a,c)
+	MergeSort(arr,c,b)
+	arrLeft := make([]int, c-a)
+	arrRight := make([]int, b-c)
+	copy(arrLeft, arr[a:c])
+	copy(arrRight, arr[c:b])
+	i := 0
+	j := 0
+	for k:=a; k<b; k++{
+		if i == c-a {
+			arr[k] = arrRight[j]
+			j++
+		}else if j == b-c{
+			arr[k] = arrLeft[i]
+			i++
+		}else if arrLeft[i] < arrRight[j] {
+			arr[k] = arrLeft[i]
+			i++
+		}else{
+			arr[k] = arrRight[j]
+			j++
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+func MergerSort(arr []int, a, b int) {
+	if b-a <= 1 {
+		return
+	}
+
+	c := (a + b) / 2
+	MergerSort(arr, a, c)
+	MergerSort(arr, c, b)
+	arrLeft := make([]int, c-a)
+	arrRight := make([]int, b-c)
+	copy(arrLeft, arr[a:c])
+	copy(arrRight, arr[c:b])
+	i := 0 // (a-b)/2的大小
+	j := 0
+	for k := a; k < b; k++ { //a~c、c~b  a-b步平分到i和j
+		// 利用左右数组排序，再换到目标中
+		if i == c-a { // a+i == c 从a走i步到达c 处理最后一个数
+			arr[k] = arrRight[j]
+			j++ // j下个
+		} else if j == b-c { // j+c == b 从c走j步到达b 处理最后一个数
+			arr[k] = arrLeft[i]
+			i++ // i下个
+		} else if arrLeft[i] < arrRight[j] { // 先放小的到左边
+			arr[k] = arrLeft[i]
+			i++ // i下个
+		} else {
+			arr[k] = arrRight[j] // 再放大的到右边
+			j++ // j下个
+		}
+	}
+}
 
 
 // -------------------------------------------------------
