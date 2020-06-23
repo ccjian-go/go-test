@@ -246,12 +246,12 @@ func MergerSort(arr []int, a, b int) {
 	copy(arrRight, arr[c:b])
 	i := 0 // (a-b)/2的大小
 	j := 0
-	for k := a; k < b; k++ { //a~c、c~b  a-b步平分到i和j
+	for k := a; k < b; k++ { //a~c、c~b  a-b步平分到i和j   取j的数 走i的步
 		// 利用左右数组排序，再换到目标中
-		if i == c-a { // a+i == c 从a走i步到达c 处理最后一个数
+		if i == c-a { // a+i == c 从a走i步到达c  i走到了最后  取j的数 走i的步 则i已经取完 只取j即可
 			arr[k] = arrRight[j]
 			j++ // j下个
-		} else if j == b-c { // j+c == b 从c走j步到达b 处理最后一个数
+		} else if j == b-c { // j+c == b 从c走j步到达b  j走到了最后
 			arr[k] = arrLeft[i]
 			i++ // i下个
 		} else if arrLeft[i] < arrRight[j] { // 先放小的到左边
