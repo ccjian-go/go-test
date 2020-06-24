@@ -129,23 +129,23 @@ func QuickSort(arr []int, startIndex, endIndex int) {
 //双边循环，从右侧开始
 func partition(arr []int, startIndex, endIndex int) int {
 	var (
-		pivot = arr[startIndex]
+		pivot = arr[startIndex] // 选择一个数，作为中间值，亦称分区点，用于比较，小的放它左边，大的放它右边
 		left = startIndex
 		right = endIndex
 	)
 	for left != right {
-		for left<right && arr[right]>pivot{
+		for left<right && arr[right]>pivot{ //从右边开始向左找，找到值比分区点的值小的位置，它需要被换到分区点的左边，称为左值
 			right--
 		}
-		for left<right && arr[left]<=pivot{
+		for left<right && arr[left]<=pivot{ //从左边开始向右找，找到值比分区点的值大的位置，它需要被换到分区点的右边，称为右值
 			left++
 		}
 		if left<right{
-			arr[left],arr[right] = arr[right],arr[left]
+			arr[left],arr[right] = arr[right],arr[left] // 交换左右值
 		}
 	}
-	arr[left],arr[startIndex] = arr[startIndex],arr[left]
-	return left
+	arr[left],arr[startIndex] = arr[startIndex],arr[left] // 将左值换到分区点的左边
+	return left 										// 交换后的左值的位置被返回
 }
 
 // 6 堆排序
